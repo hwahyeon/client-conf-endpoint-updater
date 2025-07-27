@@ -36,5 +36,9 @@ fi
 # Replace only the IP (not the port) in the 'Endpoint' line within the [Peer] block
 sed -i -E "/\[Peer\]/,/^\[/ s/(Endpoint = )[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+(:[0-9]+)/\1$NEW_IP\2/" "$CONF_FILE"
 
+# Restart the WireGuard interface
+wg-quick down "$NAME"
+wg-quick up "$NAME"
+
 echo ""
 echo "[$NAME] Endpoint updated and tunnel restarted with IP $NEW_IP"
