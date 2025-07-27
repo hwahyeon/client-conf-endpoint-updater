@@ -1,25 +1,26 @@
 # Client Endpoint Updater
 
-This is a simple utility script for updating the `Endpoint` IP address in a WireGuard `client.conf` file.
+A simple CLI utility for WireGuard **clients** to update the `Endpoint` IP address in a `.conf` file and restart the tunnel.
 
-It is especially useful for users running a WireGuard server (for example, on AWS EC2) without a domain name or Elastic IP, whether for initial testing or personal use.
+This is especially useful for users running a WireGuard server (e.g., on AWS EC2) **without a domain name or Elastic IP**, where the public IPv4 address changes after each reboot.
 
-In such cases, the server’s public IPv4 address changes after each reboot, and the new address must be manually updated in the `client.conf` file.  
-This script simplifies the process by prompting you to enter the new IP address and automatically applying the change.
+Instead of manually editing your client configuration and restarting the interface, this script automates the entire process.
 
-## What this script does
+## What This Script Does
 
-- Prompts you to enter the new public IPv4 address (e.g., from your EC2 dashboard)
-- Searches for the `[Peer]` block in your `client.conf`
-- Replaces only the IP portion of the `Endpoint = x.x.x.x:port` line
-- Leaves the port and all other configuration untouched
+- Scans for available `.conf` files in the current directory
+- Prompts you to select the tunnel to update
+- Asks for the new public IPv4 address (e.g., from your EC2 dashboard)
+- Updates the `Endpoint = x.x.x.x:port` line inside the `[Peer]` block
+- Automatically restarts the selected WireGuard interface using `wg-quick`
 
 ## Usage
 
-### 1. Prepare your `client.conf`
+### 1. Prepare your configuration files
 
-The script expects `client.conf` to be in the **same directory** as the script itself.  
-Example `client.conf` format:
+Place the script and your `.conf` file(s) in the **same directory**.
+
+Example format:
 
 ```ini
 [Interface]
@@ -36,23 +37,20 @@ PersistentKeepalive = 25
 
 ### 2. Run the script
 
-Make sure you have a Bash environment available (this is standard on Linux and macOS, and available via Git Bash or WSL on Windows).
+Ensure you are using a **Bash-compatible CLI environment**  
+(Linux, macOS Terminal, or WSL/Git Bash on Windows):
 
 ```bash
 chmod +x update-ip.sh
 ./update-ip.sh
 ```
 
-You will be prompted to enter the new public IP address. The script will automatically update the relevant line in your `client.conf` file.
+Follow the prompts to:
 
+1. Select a `.conf` file
+2. Enter the new public IP
 
-## Easy launchers
+The script will:
 
-To simplify execution on each platform, there are launcher files stored in separate branches:
-
-| Platform | Branch | File | Notes |
-|----------|--------|------|-------|
-| Windows  | [`windows-launcher`](https://github.com/hwahyeon/client-conf-endpoint-updater/tree/windows-launcher) | `update-ip.bat` | Requires [Git Bash](https://git-scm.com) |
-| Linux    | [`linux-launcher`](https://github.com/hwahyeon/client-conf-endpoint-updater/tree/linux-launcher)   | `update-ip.desktop` | Double-clickable `.desktop` file |
-
-> Place the launcher file and `client.conf` in the same directory as `update-ip.sh`.
+- Update the `Endpoint` line
+- Restart the interface using `wg-quick`
