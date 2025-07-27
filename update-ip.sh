@@ -10,8 +10,12 @@ if [ ${#CONF_FILES[@]} -eq 0 ]; then
   exit 1
 fi
 
-# Show selectable list of .conf files
-echo "Available tunnels:"
+echo ""
+echo "=== WireGuard Tunnel Updater ==="
+echo ""
+
+# Customize the select prompt
+PS3="Enter the number of the tunnel to update: "
 select CONF_FILE in "${CONF_FILES[@]}"; do
   if [ -n "$CONF_FILE" ]; then
     NAME="${CONF_FILE%.conf}"  # Remove .conf extension to get interface name
