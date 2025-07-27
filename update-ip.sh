@@ -1,6 +1,25 @@
 #!/bin/bash
+shopt -s nullglob
 
-CONF_FILE="./client.conf"
+# Collect all .conf files in the current directory
+CONF_FILES=(*.conf)
+
+# Exit if no .conf files are found
+if [ ${#CONF_FILES[@]} -eq 0 ]; then
+  echo "No .conf files found in the current directory."
+  exit 1
+fi
+
+# Show selectable list of .conf files
+echo "Available tunnels:"
+select CONF_FILE in "${CONF_FILES[@]}"; do
+  if [ -n "$CONF_FILE" ]; then
+    NAME="${CONF_FILE%.conf}"  # Remove .conf extension to get interface name
+    break
+  else
+    echo "Invalid selection."
+  fi
+done
 
 read -p "Enter the new EC2 Public IPv4 address (e.g., 12.123.12.12): " NEW_IP
 
